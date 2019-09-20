@@ -35,9 +35,36 @@ Existen varias variantes para el problema de calcular los *attention scores*
 - SQuAD Dataset de Stanford, donde tenes un texto y tenes que encontrar la respuesta en el texto.
 - SQuAD 2.0 Ahora las respuestas no estan necesariamente en el texto como en el dataset 1.0.
 
-### Contextual Representations
+### Contextual Representations - ELMo
 
 Hasta aca vimos Word2Vec, GloVe (W2V que incluia una versión probabilístca) y fastText que trabaja a nivel de caracteres y n-grams. Algunas críticas a los *word embbedigs*:
 
 - Único word embedding para una palabra con ambiguos sentidos --> posible solición desambiguar a mano y tener un embedding para cada uno (no es una tarea fácil).
-- 
+- *
+
+Pero en RNN ya metimos contexto, ¿podemos combinarlos? Ahi aparece la idea de usar un modelo de sequencias pre-entrenado
+
+***TAG LM - 2017*** (pre-ELMo)
+Entrenamos por un lado un lenguaje pre-contextualizado con una bi-LSTM y por el otro usamos word embbedigs contextualizados. Otro modelo similar ***CoVe*** (Contextualized Vectors).
+
+***ELMo - 2018*** (Embeddings Language Models)
+Hasta el anterior los modelos solo pudieron mejorar el state-of-the-art de una sola tarea, mientas que este modelo pudo mejorar en al menos 6 tareas a la vez.
+
+- Entrena una BILSTM
+- Mete dos capas biLSTM
+- Usa una CNN a nivel de caracteres
+- Despues ELMo necesita un word embedding que este libre de contexto, por ejemplo NO w2v.
+
+Después aparece también ULMfit con *learning rates* variables y otros pequeños *fine-tunning*. Además devuelve los vectores contextualizados con una concatenación de maxpool y meanpool.
+
+### Transformers - BERT
+
+En el decoder desaparece el valor de la hidden state y aparece un key-value par para codificar este hidden state per desacoplando sus valores. Además agregan *positional enconding* utilizando funciones senos y cosenos y también agregan residual conections. Tiene muchos detalles técnicos. Lo malo de los transformers es que no se llevan bien con otras arquitecturas de DNN como por ejemplo las LSTM. Lo bueno, le gano a todos en muchas tareas,
+
+Dos ejemplo son ***BERT*** y ***GPT***. En BERT se le dice bidireccional aunque no en el sentido de las LSTM ya que no recorre en ambos sentidos sino porque mira la attention de todos contra todos con algún masking.
+
+BERT fue testeado en GLUE tasks que mide varias tareas del lenguaje natural y mejoro mucho el estado del arte en todas las tareas, ya incluso usando solo el modelo y nada de fine-tunning ni cosas raras.
+
+### Attention is all you need - self-attention
+
+EL modelo contado por los mismos autores y con otros gráficos.

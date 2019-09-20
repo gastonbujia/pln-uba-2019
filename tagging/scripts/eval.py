@@ -1,7 +1,7 @@
 """Evaulate a tagger.
 
 Usage:
-  eval.py [options] -c <path> -i <file>
+  eval.py [options] -c <path> -i <file> 
   eval.py -h | --help
 
 Options:
@@ -125,6 +125,7 @@ if __name__ == '__main__':
             print('')
     
     if opts['-mcolor']:
+        # prints heatmap
         
         # select most frequent tags
         sorted_error_count = sorted(error_count.keys(),

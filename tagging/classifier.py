@@ -16,6 +16,7 @@ def feature_dict(sent, i):
     sent -- the sentence.
     i -- the position.
     """
+    # Dada una oracion devuelve los features que tiene 
     # WORK HERE!!
     return {}
 
