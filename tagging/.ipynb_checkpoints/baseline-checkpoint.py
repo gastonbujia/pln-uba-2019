@@ -1,5 +1,5 @@
 from collections import defaultdict
-
+import operator
 
 class BadBaselineTagger:
 
@@ -40,10 +40,11 @@ class BaselineTagger:
         default_tag -- tag for unknown words - ACCORDING TO ASKED = "nc0s000".
         """
         self._word_tags = defaultdict(lambda: defaultdict(int))
+        #self._words = set()
         for sent in tagged_sents:
-            nsents += 1
             for word, tag in sent:
-                self._word_tags[word][tag] += 1 
+                self._word_tags[word][tag] += 1
+                #self._words.add(word)
         self._word_tags = dict(self._word_tags)
         self._default_tag = default_tag
 
@@ -59,12 +60,17 @@ class BaselineTagger:
         - ACCORDING TO ASKED each word is tagged with the most frequent tag seen in corpus train
         w -- the word.
         """
-        self
-        return self._default_tag
-
+        if self.unknown(w):
+            return self._default_tag
+        else:
+            sorted_tags = sorted(self._word_tags[w].items(), key=lambda x: x[1])
+            return sorted_tags[-1][0]
+        
     def unknown(self, w):
         """Check if a word is unknown for the model.
 
         w -- the word.
         """
-        return self._default_tag
+        if w in self._word_tags.keys():
+            return False
+        return True
