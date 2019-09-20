@@ -27,8 +27,8 @@ class POSStats:
         self.tagged_sents = tagged_sents
         self.word_tags = defaultdict(lambda: defaultdict(int))
         self.tag_words = defaultdict(lambda: defaultdict(int))
-        self.tag_freq = defaultdict(int)
-        self.word_freq = defaultdict(int)
+        self.freq_tag = defaultdict(int)
+        self.freq_word = defaultdict(int)
         nsents = 0
         token = 0
         for sent in self.tagged_sents:
@@ -36,8 +36,8 @@ class POSStats:
             for word, tag in sent:
                 self.word_tags[word][tag] += 1 
                 self.tag_words[tag][word] += 1
-                self.word_freq[word] += 1
-                self.tag_freq[tag] += 1
+                self.freq_word[word] += 1
+                self.freq_tag[tag] += 1
                 token += 1
         self._scount = nsents
         self._tkcount = token
@@ -45,8 +45,8 @@ class POSStats:
         self._tcount = len(self.tag_words)
         self.word_tags = dict(self.word_tags)
         self.tag_words = dict(self.tag_words)
-        self.tag_freq = dict(self.tag_freq)
-        self.word_freq = dict(self.word_freq)
+        self.freq_tag = dict(self.freq_tag)
+        self.freq_word = dict(self.freq_word)
         
     def sent_count(self):
         """Total number of sentences."""
@@ -66,7 +66,7 @@ class POSStats:
 
     def word_freq(self, w):
         """Frequency of word w."""
-        return dict(self.word_freq)
+        return dict(self.freq_word)[w]
     
     def unambiguous_words(self):
         """List of words with only one observed POS tag."""
@@ -83,7 +83,7 @@ class POSStats:
 
     def tags(self):
         """POS Tagset."""
-        return list(self.tag_freq.keys())
+        return list(self.freq_tag.keys())
 
     def tag_count(self):
         """POS tagset size."""
@@ -91,7 +91,7 @@ class POSStats:
 
     def tag_freq(self, t):
         """Frequency of tag t."""
-        return self.tag_freq
+        return dict(self.freq_tag)[t]
 
     def tag_word_dict(self, t):
         """Dictionary of words and their counts for tag t."""
@@ -119,7 +119,7 @@ if __name__ == '__main__':
 
     print('Most Frequent POS Tags')
     print('======================')
-    tags = [(t, stats.tag_freq[t]) for t in stats.tags()]
+    tags = [(t, stats.tag_freq(t)) for t in stats.tags()]
     sorted_tags = sorted(tags, key=lambda t_f: -t_f[1])
     print('tag\tfreq\t%\ttop')
     for t, f in sorted_tags[:10]:
@@ -137,6 +137,6 @@ if __name__ == '__main__':
         m = len(words)
 
         # most frequent words:
-        sorted_words = sorted(words, key=lambda w: -stats.word_freq[w])
+        sorted_words = sorted(words, key=lambda w: -stats.word_freq(w))
         top = sorted_words[:5]
         print('{0}\t{1}\t{2:2.2f}\t({3})'.format(n, m, m * 100 / word_count, ', '.join(top)))

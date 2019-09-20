@@ -59,7 +59,7 @@ class BaselineTagger:
         - ACCORDING TO ASKED each word is tagged with the most frequent tag seen in corpus train
         w -- the word.
         """
-        sortedself._word_tags[w]
+        self
         return self._default_tag
 
     def unknown(self, w):
