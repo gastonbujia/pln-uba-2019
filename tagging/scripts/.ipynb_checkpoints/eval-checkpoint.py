@@ -9,12 +9,16 @@ Options:
   -i <file>     Tagging model file.
   -p            Show progress bar.
   -m            Show confusion matrix.
+  -mcolor       Show heatmap of confusion matrix.
   -h --help     Show this screen.
 """
 from docopt import docopt
 import pickle
 import sys
 from collections import defaultdict
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
 
 from tagging.ancora import SimpleAncoraCorpusReader
 
@@ -119,3 +123,12 @@ if __name__ == '__main__':
                 else:
                     print('-\t'.format(acc * 100), end='')
             print('')
+    
+    if opts['-mcolor']:
+        
+        # select most frequent tags
+        sorted_error_count = sorted(error_count.keys(),
+                                  key=lambda t: -sum(error_count[t].values()))
+        entries = sorted_error_count[:10]
+        #sns.heatmap(flights, linewidths=.5)
+        print(entries)
