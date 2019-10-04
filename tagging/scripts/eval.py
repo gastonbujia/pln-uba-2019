@@ -9,7 +9,7 @@ Options:
   -i <file>     Tagging model file.
   -p            Show progress bar.
   -m            Show confusion matrix.
-  -mcolor       Show heatmap of confusion matrix.
+  --heatm    Show heatmap of confusion matrix.
   -h --help     Show this screen.
 """
 from docopt import docopt
@@ -19,9 +19,9 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
+import pandas as pd
 
 from tagging.ancora import SimpleAncoraCorpusReader
-
 
 def progress(msg, width=None):
     """Ouput the progress of something on the same line."""
@@ -80,7 +80,10 @@ if __name__ == '__main__':
             if t2 != t1:
                 # save index of the sentence for error analysis
                 error_sents[t2][t1].add(i)
-
+        
+        
+        print(type(error_sents))
+        print(error_sents)
         format_str = '{:3.1f}% ({:2.2f}% / {:2.2f}% / {:2.2f}%)'
         if opts['-p']:
             progress(format_str.format(float(i) * 100 / n, acc, k_acc, unk_acc))
@@ -124,12 +127,20 @@ if __name__ == '__main__':
                     print('-\t'.format(acc * 100), end='')
             print('')
     
-    if opts['-mcolor']:
+    if opts['--heatm']:
         # prints heatmap
-        
-        # select most frequent tags
+        from tagging.scripts.heatmap import plot_confusion_matrix 
+        # select most important tags
         sorted_error_count = sorted(error_count.keys(),
                                   key=lambda t: -sum(error_count[t].values()))
-        entries = sorted_error_count[:10]
-        #sns.heatmap(flights, linewidths=.5)
-        print(entries)
+        entries = list(sorted_error_count[:10])
+        acc = defaultdict(lambda: defaultdict(int))
+        #acc = pd.DataFrame(columns=entries)
+        for t1 in entries:
+            for t2 in entries:
+                if error_count[t1][t2] > 0:
+                    acc[t1][t2] = error_count[t1][t2] / total
+        
+        heatmap = sns.heatmap(pd.DataFrame(dict(acc)), cmap="YlGnBu", cbar = True)
+        plt.show()
+        #print(entries)
