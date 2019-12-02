@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+import seaborn as sns
 from sklearn import svm, datasets
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -30,7 +30,8 @@ def plot_confusion_matrix(y_true, y_pred, classes,
     else:
         print('Confusion matrix, without normalization')
 
-    print(cm)
+    # No me acuerdo que hacia TODO
+    #print(cm)
 
     fig, ax = plt.subplots()
     im = ax.imshow(cm, interpolation='nearest', cmap=cmap)

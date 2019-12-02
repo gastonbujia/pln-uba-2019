@@ -1,18 +1,24 @@
 """Evaulate a tagger.
+
 Usage:
   eval.py [options] -c <path> -i <file>
   eval.py -h | --help
+
 Options:
   -c <path>     Ancora corpus path.
   -i <file>     Tagging model file.
   -p            Show progress bar.
   -m            Show confusion matrix.
   -h --help     Show this screen.
+    --heatm    Show heatmap of confusion matrix.
 """
 from docopt import docopt
 import pickle
 import sys
 from collections import defaultdict
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
 
 from tagging.ancora import SimpleAncoraCorpusReader
 
@@ -117,3 +123,20 @@ if __name__ == '__main__':
                 else:
                     print('-\t'.format(acc * 100), end='')
             print('')
+            
+    if opts['--heatm']:
+        # prints heatmap (TODO CHEQUEAR ESTO ABAJO)
+        from my_heatmap import plot_confusion_matrix 
+        # select most important tags
+        sorted_error_count = sorted(error_count.keys(),
+                                  key=lambda t: -sum(error_count[t].values()))
+        entries = list(sorted_error_count[:10])
+        acc = defaultdict(lambda: defaultdict(int))
+        #acc = pd.DataFrame(columns=entries)
+        for t1 in entries:
+            for t2 in entries:
+                if error_count[t1][t2] > 0:
+                    acc[t1][t2] = error_count[t1][t2] / total
+        
+        heatmap = sns.heatmap(pd.DataFrame(dict(acc)), cmap="YlGnBu", cbar = True)
+        plt.show()

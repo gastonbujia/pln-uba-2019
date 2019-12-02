@@ -13,7 +13,7 @@ En el primer ejercicio estudiamos las propiedades y estadísticas del corpus Anc
 |sents| 17378| 
 |tokens| 517194|
 |words| 46501|
-|tags  85|
+|tags| 85|
 
 ### Most Frequent POS Tags
 |tag|freq|%|top|
@@ -48,7 +48,22 @@ El código que genera estas estadisticas puede encontrarse en stats.py y en tp1_
 
 En este ejercicio implementamos dos *taggers* básicos como baseline. El primero de ellos etiqueta a todos los tokens con la etiqueta *nc0s000*. Los resultados obtenidos son:
 
-RESULTADOS
+
+Accuracy: 12.65% - 0.00% - 12.65% (total / known / unk)
+
+|g \ m|sp000|nc0s000|da0000|aq0000|fc|nc0p000|rg|np00000|fp|cc|
+|-----|-----|-------|------|------|--|-------|--|-------|--|--|
+|sp000|-|14.39|-|-|-|-|-|-|-|-|
+|nc0s000|-|12.65|-|-|-|-|-|-|-|-|
+|da0000|-|9.70|-|-|-|-|-|-|-|-|
+|aq0000|-|7.28|-|-|-|-|-|-|-|-|
+|fc|-|5.85|-|-|-|-|-|-|-|-|
+|nc0p000|-|5.53|-|-|-|-|-|-|-|-|
+|rg|-|3.73|-|-|-|-|-|-|-|-|
+|np00000|-|3.58|-|-|-|-|-|-|-|-|
+|fp|-|3.55|-|-|-|-|-|-|-|-|
+|cc|-|3.41|-|-|-|-|-|-|-|-|
+
 
 El segundo baseline es el etiquetar a cada token con el tag más frecuente con el que aparece, y los resultados obtenidos son:
 
@@ -67,10 +82,13 @@ Accuracy: 87.58% - 95.27% - 18.01% (total / known / unk).
 |fp|-|-|-|-|-|-|-|-|3.55|-|
 |cc|0.00|0.01|-|-|-|-|0.05|0.00|-|3.34|
 
+Aca podemos observar un mapa de calor de las etiquetas para facilitar la interpretación de los resultados:
+
+![hm0](heatmap_0.png)
 
 ### Ejercicio 3
 
-
+En este ejercicio buscamos utilizar 
 
 ### Ejercicio 4
 
