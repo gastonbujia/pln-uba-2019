@@ -140,3 +140,4 @@ if __name__ == '__main__':
         
         heatmap = sns.heatmap(pd.DataFrame(dict(acc)), cmap="YlGnBu", cbar = True)
         plt.show()
+        plt.savefig('latestfig_0.png')

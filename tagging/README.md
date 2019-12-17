@@ -84,7 +84,7 @@ Accuracy: 87.58% - 95.27% - 18.01% (total / known / unk).
 
 Aca podemos observar un mapa de calor de las etiquetas para facilitar la interpretación de los resultados:
 
-![hm0](heatmap_0.png)
+![hm0](latestfig_0.png)
 
 ### Ejercicio 3
 
