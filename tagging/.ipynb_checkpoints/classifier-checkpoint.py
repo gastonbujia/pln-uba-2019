@@ -79,35 +79,37 @@ class ClassifierTagger:
 
     def __init__(self, tagged_sents, clf='lr'):
         """
+        tagged_sents -- X, y_true (feature_matrix and vector)
         clf -- classifying model, one of 'svm', 'lr' (default: 'lr').
         """
-        # WORK HERE!!
-
+        self.classifier = classifiers[clf] 
+        self.sentences = tagged_sents
+        
     def fit(self, tagged_sents):
         """
         Train.
 
         tagged_sents -- list of sentences, each one being a list of pairs.
         """
-        # WORK HERE!!
-
+        return self.classifier.fit(tagged_sents)
+        
     def tag_sents(self, sents):
         """Tag sentences.
 
         sent -- the sentences.
         """
-        # WORK HERE!!
+        return np.array([self.tag(sent) for sent in sents])
 
     def tag(self, sent):
         """Tag a sentence.
 
         sent -- the sentence.
         """
-        # WORK HERE!!
+        return np.array([self.classifier.predict(w) for w in sent])
 
     def unknown(self, w):
         """Check if a word is unknown for the model.
 
         w -- the word.
         """
-        # WORK HERE!!
+        return True
