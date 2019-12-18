@@ -10,7 +10,7 @@ Options:
   -p            Show progress bar.
   -m            Show confusion matrix.
   -h --help     Show this screen.
-    --heatm    Show heatmap of confusion matrix.
+    --heatmap    Show heatmap of confusion matrix.
 """
 from docopt import docopt
 import pickle
@@ -124,7 +124,7 @@ if __name__ == '__main__':
                     print('-\t'.format(acc * 100), end='')
             print('')
             
-    if opts['--heatm']:
+    if opts['--heatmap']:
         # prints heatmap (TODO CHEQUEAR ESTO ABAJO)
         from my_heatmap import plot_confusion_matrix 
         # select most important tags
