@@ -31,10 +31,10 @@ def feature_dict(sent, i):
     # si la palabra actual es un número.
     # mismos features para la palabra anterior y para la siguiente.
     features = {
-        'lower': sent[i].lower(),
-        'firstUpper': sent[i][0].isupper(),
-        'isUpper': sent[i].isupper(),
-        'isNumber': is_number(sent[i])
+        'lower': sent[i][0].lower(),
+        'firstUpper': sent[i][0][0].isupper(),
+        'isUpper': sent[i][0].isupper(),
+        'isNumber': is_number(sent[i][0])
         }
     
     if i == 0:
@@ -46,10 +46,10 @@ def feature_dict(sent, i):
         }
     else:
         features_prev = {
-        'prevLower': sent[i-1].lower(),
-        'prevFirstUpper': sent[i-1][0].isupper(),
-        'prevIsUpper': sent[i-1].isupper(),
-        'prevIsNumber': is_number(sent[i-1])
+        'prevLower': sent[i-1][0].lower(),
+        'prevFirstUpper': sent[i-1][0][0].isupper(),
+        'prevIsUpper': sent[i-1][0].isupper(),
+        'prevIsNumber': is_number(sent[i-1][0])
         }
     
     #features = dict(features, features_prev)
@@ -63,15 +63,31 @@ def feature_dict(sent, i):
         }
     else:
         features_next = {
-        'nextLower': sent[i+1].lower(),
-        'nextFirstUpper': sent[i+1][0].isupper(),
-        'nextIsUpper': sent[i+1].isupper(),
-        'nextIsNumber': is_number(sent[i+1])
+        'nextLower': sent[i+1][0].lower(),
+        'nextFirstUpper': sent[i+1][0][0].isupper(),
+        'nextIsUpper': sent[i+1][0].isupper(),
+        'nextIsNumber': is_number(sent[i+1][0])
         }
     
     #features = dict(features, features_next)
     features.update(features_next)
     return features
+
+def dataVectorizer(sents):
+    
+    X = []
+    y_true = []
+    for sent in sents:
+    for i, (word, tag) in enumerate(sent):
+        x = feature_dict(sent, i)
+        X.append(x)
+        y_true.append(tag)
+    
+    vect = DictVectorizer()
+    X2 = vect.fit(X)
+    
+    return X2, y_true, vect
+
 
 class ClassifierTagger:
     """Simple and fast classifier based tagger.
@@ -98,7 +114,7 @@ class ClassifierTagger:
 
         sent -- the sentences.
         """
-        return np.array([self.tag(sent) for sent in sents])
+        return [self.tag(w) for w in sents]
 
     def tag(self, sent):
         """Tag a sentence.
