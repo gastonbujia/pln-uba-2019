@@ -135,14 +135,15 @@ class ClassifierTagger:
 
         sent -- the sentence.
         """
-        y = []
-        for i, (w,t) in enumerate(sent):
-            x = feature_dict(sent,i)
-            #y.append((w, self.classifier.predict(x)))
-            y.append(self.pipeline.predict(x))
+        #y = []
+        #for i, (w,t) in enumerate(sent):
+            #x = feature_dict(sent,i)
+            ##y.append((w, self.classifier.predict(x)))
+            #y.append(self.pipeline.predict(x))
         
-        return y
-
+        #return y
+        return self.pipeline.predict([feature_dict(sent, i) for i in range(len(sent))])
+    
     def unknown(self, w):
         """Check if a word is unknown for the model.
 
