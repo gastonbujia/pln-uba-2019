@@ -1,8 +1,13 @@
+import numpy as np
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import MultinomialNB
+from nltk.tokenize import word_tokenize
+from time import time
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 classifiers = {
@@ -73,21 +78,6 @@ def feature_dict(sent, i):
     features.update(features_next)
     return features
 
-def dataVectorizer(sents):
-    
-    X = []
-    y_true = []
-    for sent in sents:
-    for i, (word, tag) in enumerate(sent):
-        x = feature_dict(sent, i)
-        X.append(x)
-        y_true.append(tag)
-    
-    vect = DictVectorizer()
-    X2 = vect.fit(X)
-    
-    return X2, y_true, vect
-
 
 class ClassifierTagger:
     """Simple and fast classifier based tagger.
@@ -98,34 +88,77 @@ class ClassifierTagger:
         tagged_sents -- X, y_true (feature_matrix and vector)
         clf -- classifying model, one of 'svm', 'lr' (default: 'lr').
         """
-        self.classifier = classifiers[clf] 
+        #self.classifier = classifiers[clf] 
         self.sentences = tagged_sents
+        #self._words = set()
+        #for sent in self.sentences:
+        #    for w, t in sent:
+        #        self._words.add(w)
+        #self.vectorizer = DictVectorizer()
+        self._words = []
+        self.time = 0
+        self.pipeline = Pipeline([
+                ('vect', DictVectorizer()),
+                ('clf', classifiers[clf]())
+                ], verbose = True)
+        self.fit(tagged_sents)
         
+    def _dataSeparation(self, sents):
+
+        X = []
+        y_true = []
+        for sent in sents:
+            for i, (word, tag) in enumerate(sent):
+                self._words.append(word)
+                x = feature_dict(sent, i)
+                X.append(x)
+                y_true.append(tag)
+
+        #self.vectorizer.fit(X)
+        #X2 = self.vectorizer.transform(X)
+
+        return X, y_true
+    
     def fit(self, tagged_sents):
         """
         Train.
 
         tagged_sents -- list of sentences, each one being a list of pairs.
         """
-        return self.classifier.fit(tagged_sents)
+        X, y = self._dataSeparation(self.sentences)
+        start = time()
+        #self.classifier.fit(X, y)
+        self.pipeline.fit(X, y)
+        self.time = time() - start
+        print("Tiempo de vectorizacion  + entrenamiento: {}".format(self.time))
         
     def tag_sents(self, sents):
         """Tag sentences.
 
         sent -- the sentences.
         """
-        return [self.tag(w) for w in sents]
+        return [self.tag(sent) for sent in sents]
 
     def tag(self, sent):
-        """Tag a sentence.
+        """Tag a sentence (list of pairs).
 
         sent -- the sentence.
         """
-        return np.array([self.classifier.predict(w) for w in sent])
+        y = []
+        for i, (w,t) in enumerate(sent):
+            x = feature_dict(sent,i)
+            x = self.vectorizer.transform(x)
+            #y.append((w, self.classifier.predict(x)))
+            y.append(self.pipeline.predict(x))
+        
+        return y
 
     def unknown(self, w):
         """Check if a word is unknown for the model.
 
         w -- the word.
         """
-        return True
+        if w in self._words:
+            return False
+        else:
+            return True

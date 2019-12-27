@@ -20,7 +20,7 @@ import pickle
 
 from tagging.ancora import SimpleAncoraCorpusReader
 from tagging.baseline import BaselineTagger, BadBaselineTagger
-from tagging.classifier import ClassifierTagger, vectorize
+from classifier import ClassifierTagger
 
 models = {
     'badbase': BadBaselineTagger,
