@@ -4,3 +4,4 @@ tp2/review_polarity_competition
 /tagging/lr
 /tagging/nb
 /tagging/svm
+/tagging/.ipynb_checkpoints

@@ -116,7 +116,8 @@ class ClassifierTagger:
 
         tagged_sents -- list of sentences, each one being a list of pairs.
         """
-        X, y = self._dataSeparation(self.sentences)
+        tagged_sents = list(tagged_sents)
+        X, y = self._dataSeparation(tagged_sents)
         start = time()
         #self.classifier.fit(X, y)
         self.pipeline.fit(X, y)
