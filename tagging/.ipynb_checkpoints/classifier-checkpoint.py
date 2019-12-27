@@ -61,7 +61,7 @@ def feature_dict(sent, i):
     features.update(features_prev)
     if i == len(sent)-1:
         features_next = {
-        'nextLower': '<u>',  # ultima token
+        'nextLower': '<u>',  # ultimo token
         'nextFirstUpper': False,
         'nextIsUpper': False,
         'nextIsNumber': False
@@ -88,20 +88,14 @@ class ClassifierTagger:
         tagged_sents -- X, y_true (feature_matrix and vector)
         clf -- classifying model, one of 'svm', 'lr' (default: 'lr').
         """
-        #self.classifier = classifiers[clf] 
-        self.sentences = tagged_sents
-        #self._words = set()
-        #for sent in self.sentences:
-        #    for w, t in sent:
-        #        self._words.add(w)
-        #self.vectorizer = DictVectorizer()
+        self.sentences = list(tagged_sents)
         self._words = []
         self.time = 0
         self.pipeline = Pipeline([
-                ('vect', DictVectorizer()),
-                ('clf', classifiers[clf]())
-                ], verbose = True)
-        self.fit(tagged_sents)
+                ('vectorizer', DictVectorizer()),
+                ('classifier', classifiers[clf]())],
+                verbose = True)
+        self.fit(self.sentences)
         
     def _dataSeparation(self, sents):
 
@@ -113,9 +107,6 @@ class ClassifierTagger:
                 x = feature_dict(sent, i)
                 X.append(x)
                 y_true.append(tag)
-
-        #self.vectorizer.fit(X)
-        #X2 = self.vectorizer.transform(X)
 
         return X, y_true
     
@@ -147,7 +138,6 @@ class ClassifierTagger:
         y = []
         for i, (w,t) in enumerate(sent):
             x = feature_dict(sent,i)
-            x = self.vectorizer.transform(x)
             #y.append((w, self.classifier.predict(x)))
             y.append(self.pipeline.predict(x))
         

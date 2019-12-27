@@ -8,6 +8,8 @@ Options:
   -m <model>    Model to use [default: badbase]:
                   badbase: Bad baseline
                   base: Baseline
+                  clf: ClassifierTagger
+  -f <function> Classifier function:
                   lr: LogisticRegression,
                   svm: LinearSVC,
                   nb: MultinomialNB
@@ -20,14 +22,12 @@ import pickle
 
 from tagging.ancora import SimpleAncoraCorpusReader
 from tagging.baseline import BaselineTagger, BadBaselineTagger
-from tagging.classifier import ClassifierTagger, vectorize
+from classifier import ClassifierTagger
 
 models = {
     'badbase': BadBaselineTagger,
     'base': BaselineTagger,
-    'lr': ClassifierTagger,
-    'svm': ClassifierTagger,
-    'nb': ClassifierTagger
+    'clf': ClassifierTagger
 }
 
 
@@ -40,11 +40,10 @@ if __name__ == '__main__':
     sents = corpus.tagged_sents()
 
     # train the model
-    if opts['-m']=='lr' or opts['-m']=='svm' or opts['-m']=='nb':
-        model_class = models[opts['-m']]
-        model = model_class(sents, opts['-m'])
-    else: 
-        model_class = models[opts['-m']]
+    model_class = models[opts['-m']]
+    if opts['-m']=='clf':
+        model = model_class(sents, opts['-f'])
+    else:
         model = model_class(sents)
         
     # save it
@@ -52,3 +51,5 @@ if __name__ == '__main__':
     f = open(filename, 'wb')
     pickle.dump(model, f)
     f.close()
+    
+    
